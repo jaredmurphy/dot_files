@@ -1,0 +1,31 @@
+snippet puts
+	puts "${1:}"
+	puts $1
+
+snippet pry
+	binding.pry
+
+###############
+# RSpec
+###############
+
+snippet reqhelper
+	require "rails_helper"
+
+snippet describe
+	describe "${1:}" do
+	  ${2:}
+	end
+
+snippet context
+	context "when ${1:}" do
+	  ${2:}
+	end
+snippet it
+	it "${1:}" do
+	  ${2:}
+	end
+snippet expect
+	expect(${1:}).to ${2:}
+snippet let
+	let(:${1:}) { ${2:} }

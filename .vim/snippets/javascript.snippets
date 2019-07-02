@@ -1,0 +1,58 @@
+snippet clog
+	console.log('${1:}', $1);
+
+snippet log
+	console.log('${1:}');
+
+snippet debug
+	debugger;
+
+snippet arrowfunc
+	const ${1:} = (${2:}) => {
+	  ${3:}
+	};
+
+###############
+# React
+###############
+
+# imports
+snippet importreact
+	import React from 'react';
+
+snippet importproptypes
+	import PropTypes from 'prop-types';
+
+snippet importclassnames
+	import classNames from 'classnames';
+
+# Components
+snippet reactfunc
+	const ${1:} = (props) => {
+	  return (
+		  ${2:}
+		);
+	};
+
+	$1.propTypes = {
+
+	};
+
+	export default $1;
+
+snippet reactclass
+	class ${1:} extends React.Component {
+	  render(){
+		  return (
+			  ${2:}
+			);
+		};
+	};
+
+	$1.propTypes = {
+
+	};
+
+	export default $1;
+
+
