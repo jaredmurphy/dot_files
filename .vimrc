@@ -56,8 +56,14 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
-" Insert a hash rocket
-imap <leader>l <space>=><space>
+" map <space> to :
+nnoremap <space> :
+
+" make it easier to copy to clipboard
+noremap cp :w !pbcopy<CR><CR>
+
+" format entire file and return to line
+nnoremap fo gg=G''
 
 " switch between the last 2 files
 nnoremap <leader><leader> <c-^>
@@ -71,9 +77,7 @@ nnoremap <leader>sc :source ~/.vimrc<CR>
 " use <leader>e for :Explore
 nnoremap <leader>e :Explore<Cr>
 
-" clone paragraph with cp
-noremap cp yap<S-}>p
-
+" user leader s for snipmate trigger
 :imap <leader>s <Plug>snipMateNextOrTrigger
 :smap <leader>s <Plug>snipMateNextOrTrigger
 
@@ -82,7 +86,6 @@ nmap <silent> <leader>t :TestFile<CR>
 nmap <silent> <leader>T :TestNearest<CR>
 nmap <silent> <leader>a :TestSuite<CR>
 nmap <silent> <leader>l :TestLast<CR>
-nmap <silent> <leader>g :TestVisit<CR>
 
 " emmet settings
 let g:user_emmet_leader_key = "<Tab>"
@@ -113,7 +116,7 @@ endfunction
 inoremap <expr> <tab> InsertTabWrapper()
 inoremap <s-tab> <c-n>
 
-"" map ctrl-j and cntrl-k to up/down in completion options
+" map ctrl-j and ctrl-k to up/down in completion options
 inoremap <expr> <C-J> ((pumvisible())?("\<C-n>"):("\<C-J>"))
 inoremap <expr> <C-K> ((pumvisible())?("\<C-p>"):("\<C-K>"))
 
@@ -166,7 +169,6 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 nnoremap \ :Ag<SPACE>
 
-
 " ========================================================================
 " Display
 " ========================================================================
@@ -211,6 +213,8 @@ set ignorecase smartcase
 " mouse scroll
 set mouse=a
 set history=10000
+
+set nopaste
 
 " make sure to not rename original files - will mess up webpack watch
 set backupcopy=yes
