@@ -25,12 +25,12 @@ Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'kien/ctrlp.vim'
 Plugin 'vim-ruby/vim-ruby'
+Plugin 'pangloss/vim-javascript'
+Plugin 'isRuslan/vim-es6'
+Plugin 'mxw/vim-jsx'
 Plugin 'tpope/vim-rails.git'
 Plugin 'tpope/vim-surround'
 Plugin 'janko-m/vim-test'
-Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
-Plugin 'isRuslan/vim-es6'
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'scrooloose/nerdcommenter'
@@ -38,6 +38,7 @@ Plugin 'garbas/vim-snipmate'
 Plugin 'itchyny/lightline.vim'
 Plugin 'tpope/vim-fugitive.git'
 Plugin 'vim-syntastic/syntastic'
+Plugin 'arcticicestudio/nord-vim'
 
 call vundle#end()
 
@@ -171,7 +172,9 @@ set list
 " Make it more obvious which paren I'm on
 hi MatchParen cterm=none ctermbg=black ctermfg=yellow
 
-syntax on
+let g:nord_cursor_line_number_background = 1
+colorscheme nord
+
 set t_Co=256
 set colorcolumn=100
 set cursorline
@@ -183,13 +186,12 @@ set autoindent
 filetype indent on
 set expandtab
 set hlsearch
-syntax on
-colorscheme railscasts
+syntax enable
 
 " status line
 set laststatus=2
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'nord',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ],
