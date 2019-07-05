@@ -24,7 +24,6 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'kien/ctrlp.vim'
-Plugin 'mattn/emmet-vim'
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'tpope/vim-rails.git'
 Plugin 'tpope/vim-surround'
@@ -38,6 +37,7 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'garbas/vim-snipmate'
 Plugin 'itchyny/lightline.vim'
 Plugin 'tpope/vim-fugitive.git'
+Plugin 'vim-syntastic/syntastic'
 
 call vundle#end()
 
@@ -74,15 +74,11 @@ nnoremap <CR> :nohlsearch<cr>
 " use <leader>s to reload buffer with updated vimrc
 nnoremap <leader>sc :source ~/.vimrc<CR>
 
-" use <leader>e for :Explore
-nnoremap <leader>e :Explore<CR>
-
-" use <leader>le for :Lexplore
-nnoremap <leader>le :Lexplore<CR>
-
 " netrw
 let g:netrw_winsize=10
 let g:netrw_menu=0
+nnoremap <leader>e :Explore<CR>
+nnoremap <leader>le :Lexplore<CR>
 
 " user leader s for snipmate trigger
 :imap <leader>s <Plug>snipMateNextOrTrigger
@@ -93,14 +89,6 @@ nmap <silent> <leader>t :TestFile<CR>
 nmap <silent> <leader>T :TestNearest<CR>
 nmap <silent> <leader>a :TestSuite<CR>
 nmap <silent> <leader>l :TestLast<CR>
-
-" emmet settings
-let g:user_emmet_leader_key = "<Tab>"
-let g:user_emmet_settings = {
-  \  'javascript.jsx' : {
-    \      'extends' : 'jsx',
-    \  },
-  \}
 
 " lets vim-jsx run on .js files
 let g:jsx_ext_required = 0
@@ -204,10 +192,12 @@ let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ]
+      \             [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ],
+      \   'right': [ [ 'lineinfo' ], ['percent'], [ 'syntastic', 'filetype'] ]
       \ },
       \ 'component_function': {
       \   'gitbranch': 'fugitive#head',
+      \   'syntastic': 'SyntasticStatuslineFlag'
       \ },
       \ }
 
