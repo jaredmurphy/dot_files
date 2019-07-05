@@ -36,7 +36,8 @@ Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'garbas/vim-snipmate'
-Plugin 'mileszs/ack.vim'
+Plugin 'itchyny/lightline.vim'
+Plugin 'tpope/vim-fugitive.git'
 
 call vundle#end()
 
@@ -56,11 +57,10 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
-" map <space> to :
-nnoremap <space> :
-
 " make it easier to copy to clipboard
 noremap cp :w !pbcopy<CR><CR>
+
+nnoremap <leader>ch :w !git checkout<space>
 
 " format entire file and return to line
 nnoremap fo gg=G''
@@ -75,7 +75,14 @@ nnoremap <CR> :nohlsearch<cr>
 nnoremap <leader>sc :source ~/.vimrc<CR>
 
 " use <leader>e for :Explore
-nnoremap <leader>e :Explore<Cr>
+nnoremap <leader>e :Explore<CR>
+
+" use <leader>le for :Lexplore
+nnoremap <leader>le :Lexplore<CR>
+
+" netrw
+let g:netrw_winsize=10
+let g:netrw_menu=0
 
 " user leader s for snipmate trigger
 :imap <leader>s <Plug>snipMateNextOrTrigger
@@ -97,9 +104,6 @@ let g:user_emmet_settings = {
 
 " lets vim-jsx run on .js files
 let g:jsx_ext_required = 0
-
-" use github style markdown
-let vim_markdown_preview_github=1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY (thanks Gary Bernhardt)
@@ -179,11 +183,6 @@ set list
 " Make it more obvious which paren I'm on
 hi MatchParen cterm=none ctermbg=black ctermfg=yellow
 
-if &term =~ '256color'
-  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
-  set t_ut=
-endif
-
 syntax on
 set t_Co=256
 set colorcolumn=100
@@ -199,8 +198,18 @@ set hlsearch
 syntax on
 colorscheme railscasts
 
-" enable status line always
+" status line
 set laststatus=2
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'fugitive#head',
+      \ },
+      \ }
 
 " make comments italicized
 let &t_ZH="\e[3m"
@@ -221,6 +230,10 @@ set backupcopy=yes
 
 " reload file if is changed
 set autoread
+
+" open new split panes to right and bottom
+set splitbelow
+set splitright
 
 " remove whitespace on save
 autocmd BufWritePre * %s/\s\+$//e
