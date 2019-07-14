@@ -173,6 +173,7 @@ set list
 hi MatchParen cterm=none ctermbg=black ctermfg=yellow
 
 let g:nord_cursor_line_number_background = 1
+let g:nord_bold_vertical_split_line = 1
 colorscheme nord
 
 set t_Co=256
@@ -202,6 +203,10 @@ let g:lightline = {
       \   'syntastic': 'SyntasticStatuslineFlag'
       \ },
       \ }
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
 
 " make comments italicized
 let &t_ZH="\e[3m"
