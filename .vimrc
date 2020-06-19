@@ -8,11 +8,34 @@
 " ========================================================================
 
 " ========================================================================
-" Important
+" Defaults
 " ========================================================================
-set nocompatible
-filetype on
 let mapleader = ","
+set nocompatible
+filetype indent on
+syntax enable
+set noerrorbells
+set tabstop=2 softtabstop=2
+set shiftwidth=2
+set expandtab
+set smartindent
+set nu
+set nowrap
+set smartcase
+set noswapfile
+set nobackup
+set undodir=~/.vim/undodir
+set undofile
+set incsearch
+set formatoptions-=cro
+set t_Co=256
+set number
+set autoindent
+set hlsearch
+set autoread
+set nopaste
+set splitbelow
+set splitright
 
 " ========================================================================
 " Plug
@@ -20,11 +43,6 @@ let mapleader = ","
 call plug#begin('~/.vim/plugged')
 
 Plug 'kien/ctrlp.vim'
-Plug 'vim-ruby/vim-ruby'
-Plug 'pangloss/vim-javascript'
-Plug 'isRuslan/vim-es6'
-Plug 'mxw/vim-jsx'
-Plug 'tpope/vim-rails'
 Plug 'tpope/vim-surround'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
@@ -34,13 +52,19 @@ Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 Plug 'janko/vim-test'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'leafgarland/typescript-vim'
 Plug 'dense-analysis/ale'
 Plug 'morhetz/gruvbox'
 Plug 'christoomey/vim-system-copy'
 Plug 'preservim/nerdtree'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
   " Install https://github.com/neoclide/coc-solargraph for ruby
+
+Plug 'vim-ruby/vim-ruby'
+Plug 'tpope/vim-rails'
+Plug 'mxw/vim-jsx'
+Plug 'isRuslan/vim-es6'
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
 
 call plug#end()
 
@@ -258,66 +282,6 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 nnoremap \ :Ag<SPACE>
 
-" ========================================================================
-" Display
-" ========================================================================
-
-" Handle ugly whitespace
-set list listchars=tab:>-,trail:•,precedes:<,extends:>
-set list
-
-" Make it more obvious which paren I'm on
-hi MatchParen cterm=none ctermbg=black ctermfg=yellow
-
-" do not auto format comment characters on new line
-set formatoptions-=ro
-
-set background=dark
-
-colorscheme gruvbox
-
-set t_Co=256
-set number
-set autoindent
-filetype indent on
-set hlsearch
-syntax enable
-
-set background=dark
-
-" typescript
-augroup SyntaxSettings
-    autocmd!
-    autocmd BufNewFile,BufRead *.ts set filetype=typescript
-augroup END
-autocmd FileType typescript setlocal formatprg=prettier\ --parser\ typescript
-
-" make comments easier to read
-:hi Comment ctermfg=DarkMagenta
-
-" make searches case-sensitive only if they contain upper-case characters
-" may be in conflict with new defaults
-set ignorecase smartcase
-
-" mouse scroll
-set mouse=a
-set history=10000
-
-set nopaste
-
-" make sure to not rename original files - will mess up webpack watch
-set backupcopy=yes
-
-" reload file if is changed
-set autoread
-
-" open new split panes to right and bottom
-set splitbelow
-set splitright
-
-" do not store global and local values in a session
-set ssop-=options
-
 " remove whitespace on save
 autocmd BufWritePre * %s/\s\+$//e
 
@@ -330,27 +294,24 @@ function! AdjustWindowHeight(minheight, maxheight)
   exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" UPDATES
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Sane defaults
-syntax on
-
-set noerrorbells
-set tabstop=2 softtabstop=2
-set shiftwidth=2
-set expandtab
-set smartindent
-set nu
-set nowrap
-set smartcase
-set noswapfile
-set nobackup
-set undodir=~/.vim/undodir
-set undofile
-set incsearch
-set formatoptions-=cro
-
+" ========================================================================
+" Display
+" ========================================================================
+set list listchars=tab:>-,trail:•,precedes:<,extends:>
+set list
+hi MatchParen cterm=none ctermbg=black ctermfg=yellow
+set formatoptions-=ro
+set background=dark
+colorscheme gruvbox
+set background=dark
+:hi Comment ctermfg=DarkMagenta
 set colorcolumn=108
 highlight ColorColumn ctermbg=0 guibg=lightgrey
+
+" ========================================================================
+" Other
+" ========================================================================
+" make sure to not rename original files - will mess up webpack watch
+set backupcopy=yes
+" do not store global and local values in a session
+set ssop-=options
