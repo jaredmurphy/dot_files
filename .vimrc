@@ -44,12 +44,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
-" ========================================================================
-" Mappings
-" ========================================================================
-imap jj <Esc>
-
-" ctrlp
+" Ctrlp
 let g:ctrlp_map = '<leader>f'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_custom_ignore = 'node_modules/'
@@ -57,11 +52,39 @@ let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:50,results:50'
 map <leader>m :CtrlPMRU<CR>
 map <leader>b :CtrlPBuffer<CR>
 
-" nerdtree
+" Nerdtree
 map <leader>n :NERDTreeToggle<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" Ale
+let g:ale_sign_error = '●'
+let g:ale_sign_warning = '•'
+let g:ale_fix_on_save = 1
+let g:ale_sign_column_always = 1
+let g:airline#extensions#ale#enabled = 1
+let g:ale_fixers = {
+\   'typescript': ['prettier'],
+\   'ruby': ['rubocop'],
+\}
+
+" Vim-Test
+nmap <silent> <leader>t :TestFile<CR>
+nmap <silent> <leader>T :TestNearest<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
+
+" lets vim-jsx run on .js files
+let g:jsx_ext_required = 0
+
+" ========================================================================
+" Mappings
+" ========================================================================
+imap jj <Esc>
+
+nmap <silent> <C-e> <Plug>(ale_next_wrap)
 
 " make it easier to switch between windows
 nnoremap <C-H> <C-W><C-H>
@@ -88,16 +111,6 @@ nnoremap <CR> :nohlsearch<cr>
 
 " use <leader>sc to reload buffer with updated vimrc
 nnoremap <leader>sc :source ~/.vimrc<CR>
-
-" map vim-test commands
-nmap <silent> <leader>t :TestFile<CR>
-nmap <silent> <leader>T :TestNearest<CR>
-nmap <silent> <leader>a :TestSuite<CR>
-nmap <silent> <leader>l :TestLast<CR>
-nmap <silent> <leader>g :TestVisit<CR>
-
-" lets vim-jsx run on .js files
-let g:jsx_ext_required = 0
 
 " ========================================================================
 " Functions
@@ -248,6 +261,7 @@ nnoremap \ :Ag<SPACE>
 " ========================================================================
 " Display
 " ========================================================================
+
 " Handle ugly whitespace
 set list listchars=tab:>-,trail:•,precedes:<,extends:>
 set list
@@ -270,13 +284,6 @@ set hlsearch
 syntax enable
 
 set background=dark
-
-" ale
-let g:ale_fix_on_save = 1
-let g:ale_fixers = {
-\   'typescript': ['prettier'],
-\}
-
 
 " typescript
 augroup SyntaxSettings
@@ -317,56 +324,11 @@ autocmd BufWritePre * %s/\s\+$//e
 " close quickfix window when selecting an item
 autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Test quickfix list management
-"
-" If the tests write a tmp/quickfix file, these mappings will navigate through it
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! GetBufferList()
-  redir =>buflist
-  silent! ls
-  redir END
-  return buflist
-endfunction
-
-function! BufferIsOpen(bufname)
-  let buflist = GetBufferList()
-  for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
-    if bufwinnr(bufnum) != -1
-      return 1
-    endif
-  endfor
-  return 0
-endfunction
-
-function! ToggleQuickfix()
-  if BufferIsOpen("Quickfix List")
-    cclose
-  else
-    call OpenQuickfix()
-  endif
-endfunction
-
-function! OpenQuickfix()
-  cgetfile tmp/quickfix
-  topleft cwindow
-  if &ft == "qf"
-      cc
-  endif
-endfunction
-
-nnoremap <leader>q :call ToggleQuickfix()<cr>
-nnoremap <leader>Q :cc<cr>
-nnoremap <leader>j :cnext<cr>
-nnoremap <leader>k :cprev<cr>
-
-
 " Make quickfix window taller ----- ????
 au FileType qf call AdjustWindowHeight(10, 25)
 function! AdjustWindowHeight(minheight, maxheight)
   exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " UPDATES
