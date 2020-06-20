@@ -21,7 +21,7 @@ set expandtab
 set smartindent
 set nu
 set nowrap
-set smartcase
+set ignorecase smartcase
 set noswapfile
 set nobackup
 set undodir=~/.vim/undodir
@@ -56,6 +56,9 @@ Plug 'dense-analysis/ale'
 Plug 'morhetz/gruvbox'
 Plug 'christoomey/vim-system-copy'
 Plug 'preservim/nerdtree'
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'npm install',
+  \ 'for': ['javascript', 'css', 'scss', 'json', 'markdown', 'yaml', 'html', 'ruby'] }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
   " Install https://github.com/neoclide/coc-solargraph for ruby
 
@@ -64,7 +67,6 @@ Plug 'tpope/vim-rails'
 Plug 'mxw/vim-jsx'
 Plug 'isRuslan/vim-es6'
 Plug 'pangloss/vim-javascript'
-Plug 'leafgarland/typescript-vim'
 
 call plug#end()
 
@@ -90,8 +92,11 @@ let g:ale_sign_column_always = 1
 let g:airline#extensions#ale#enabled = 1
 let g:ale_fixers = {
 \   'typescript': ['prettier'],
-\   'ruby': ['rubocop'],
+\   'ruby': ['prettier', 'rubocop'],
 \}
+
+" Prettier
+let g:prettier#config#config_precedence = 'file-override'
 
 " Vim-Test
 nmap <silent> <leader>t :TestFile<CR>
@@ -180,7 +185,7 @@ function! PromoteToLet()
   :normal ==
 endfunction
 :command! PromoteToLet :call PromoteToLet()
-:map <leader>p :PromoteToLet<cr>
+:map <leader>pl :PromoteToLet<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " TODO: INPROGRESS
