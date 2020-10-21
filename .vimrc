@@ -4,7 +4,10 @@
 "   \_/ |_|_| |_| |_|_|  \___|
 
 " ========================================================================
-" I took a bunch of this from Bryan Mytko (https://github.com/bryanmytko/dot_files)
+" I took a bunch of this from
+"   Bryan Mytko (https://github.com/bryanmytko/dot_files)
+"   Gary Bernhardt (https://github.com/garybernhardt/dotfiles)
+"   and many other sources
 " ========================================================================
 
 " ========================================================================
@@ -20,8 +23,7 @@ set shiftwidth=2
 set expandtab
 set smartindent
 set nu
-set nowrap
-set ignorecase smartcase
+set ignorecase
 set noswapfile
 set nobackup
 set undodir=~/.vim/undodir
@@ -36,31 +38,33 @@ set autoread
 set nopaste
 set splitbelow
 set splitright
+set breakindent
+set breakindentopt=sbr
+set showbreak=↪>\
 
 " ========================================================================
 " Plug
 " ========================================================================
 call plug#begin('~/.vim/plugged')
 
-Plug 'kien/ctrlp.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-surround'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'garbas/vim-snipmate'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
 Plug 'janko/vim-test'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'dense-analysis/ale'
-Plug 'morhetz/gruvbox'
+Plug 'sainnhe/gruvbox-material'
 Plug 'christoomey/vim-system-copy'
 Plug 'preservim/nerdtree'
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'npm install',
-  \ 'for': ['javascript', 'css', 'scss', 'json', 'markdown', 'yaml', 'html', 'ruby'] }
+Plug 'AndrewRadev/splitjoin.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  " Install https://github.com/neoclide/coc-solargraph for ruby
 
 Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-rails'
@@ -69,16 +73,18 @@ Plug 'isRuslan/vim-es6'
 Plug 'pangloss/vim-javascript'
 
 call plug#end()
+" install Bat for fzf preview highlighting https://github.com/sharkd
+" install ag for fzf engine https://github.com/ggreer/the_silver_searcher
+" install coc ruby helper https://github.com/neoclide/coc-solargraph
 
-" Ctrlp
-let g:ctrlp_map = '<leader>f'
-let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_custom_ignore = 'node_modules/'
-let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:50,results:50'
-map <leader>m :CtrlPMRU<CR>
-map <leader>b :CtrlPBuffer<CR>
+" fzf
+map <leader>f :Files<CR>
+map <leader>F :Files!<CR>
+map <leader>m :History<CR>
+map <leader>b :Windows<CR>
 
 " Nerdtree
+map <leader>e :NERDTreeFind<cr>
 map <leader>n :NERDTreeToggle<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
@@ -92,11 +98,17 @@ let g:ale_sign_column_always = 1
 let g:airline#extensions#ale#enabled = 1
 let g:ale_fixers = {
 \   'typescript': ['prettier'],
-\   'ruby': ['prettier', 'rubocop'],
+\   'ruby': ['rubocop', 'prettier'],
 \}
 
-" Prettier
-let g:prettier#config#config_precedence = 'file-override'
+" Airline
+let g:airline_theme = 'base16_gruvbox_dark_hard'
+let g:airline_extensions = ['tabline', 'branch', 'ale']
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#show_tab_type = 0
+let g:airline#extensions#ale#error_symbol = 'E:'
+let g:airline#extensions#ale#warning_symbol = 'W:'
+let g:airline#extensions#ale#show_line_numbers = 0
 
 " Vim-Test
 nmap <silent> <leader>t :TestFile<CR>
@@ -104,6 +116,10 @@ nmap <silent> <leader>T :TestNearest<CR>
 nmap <silent> <leader>a :TestSuite<CR>
 nmap <silent> <leader>l :TestLast<CR>
 nmap <silent> <leader>g :TestVisit<CR>
+
+" Snipmate
+:imap <leader>s <Plug>snipMateNextOrTrigger
+:smap <leader>s <Plug>snipMateNextOrTrigger
 
 " lets vim-jsx run on .js files
 let g:jsx_ext_required = 0
@@ -127,7 +143,8 @@ nnoremap <C-n> gt
 nnoremap <C-p> gT
 
 " copy filename to clipboard
-nnoremap <leader>F :!echo -n % \| pbcopy<CR><CR>
+"nnoremap <leader>F :!echo -n % \| pbcopy<CR><CR>
+nnoremap cpf :!echo -n % \| pbcopy<CR><CR>
 
 " format entire file and return to line
 nnoremap fo gg=G''
@@ -188,25 +205,26 @@ endfunction
 :map <leader>pl :PromoteToLet<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" TODO: INPROGRESS
-" do/end block to {} block
+" Run Code Climate Analysic on Current File
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! CodeClimateAnalysis()
+  :! codeclimate analyze %
+endfunction
+:command! CodeClimateAnalysis :call CodeClimateAnalysis()
+:map <leader>cc :CodeClimateAnalysis<cr>
 
-function! PromoteToCurly()
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Promote allow to expect
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! PromoteToExpect()
   :normal! dd
   :normal! P
-  ":.s/\(\w\+\) { \(.*\)$/do\1 new_line \2 end/
-  ":.s/\(\w\+\) { \(.*\)$/\1 do \r now im here/
-
-  ":.s/\ { \(.*\)$/ do \r \1/
-
-  ":normal j
-
-  :.s/\ } \(.*\)$/ \1 \r end/
+  :.s/allow/expect/
+  :.s/receive/have_received/
   :normal ==
 endfunction
-:command! PromoteToCurly :call PromoteToCurly()
-:map <leader>do :PromoteToCurly<cr>
+:command! PromoteToExpect :call PromoteToExpect()
+:map <leader>pe :PromoteToExpect<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Go back to same line when closing & reopening the buffer (thanks Gary Bernhardt)
@@ -237,12 +255,27 @@ endfunction
 command! OpenChangedFiles :call OpenChangedFiles()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" Test in buffer below
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! TestInBuffer(scope)
+  exec ":w ! bundle exec rspec " . a:scope
+endfunction
+
+command! TestLineInBuffer :call TestInBuffer(join([expand('%'),  line(".")], ':'))
+command! TestFileInBuffer :call TestInBuffer(expand("%"))
+
+nnoremap <leader>bt :TestFileInBuffer<CR>
+nnoremap <leader>bT :TestLineInBuffer<CR>
+nnoremap P :w !
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Switch between test and production code (thanks Gary)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! OpenTestAlternate()
   let new_file = AlternateForCurrentFile()
   exec ':e ' . new_file
 endfunction
+
 function! AlternateForCurrentFile()
   let current_file = expand("%")
   let new_file = current_file
@@ -266,26 +299,9 @@ function! AlternateForCurrentFile()
 endfunction
 nnoremap <leader>. :call OpenTestAlternate()<cr>
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use ag instedad of grep (https://thoughtbot.com/blog/faster-grepping-in-vim)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif
-
-" map K to grep word under cursor
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-
-" map \ (backward slash) to grep shortcut
-command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+nnoremap K :Ag <C-R><C-W><CR>
 nnoremap \ :Ag<SPACE>
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " remove whitespace on save
 autocmd BufWritePre * %s/\s\+$//e
@@ -299,19 +315,24 @@ function! AdjustWindowHeight(minheight, maxheight)
   exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
 
+
 " ========================================================================
 " Display
 " ========================================================================
+if (has("termguicolors"))
+ set termguicolors
+endif
+
+colorscheme gruvbox-material
+
 set list listchars=tab:>-,trail:•,precedes:<,extends:>
 set list
-hi MatchParen cterm=none ctermbg=black ctermfg=yellow
 set formatoptions-=ro
 set background=dark
-colorscheme gruvbox
-set background=dark
-:hi Comment ctermfg=DarkMagenta
 set colorcolumn=108
-highlight ColorColumn ctermbg=0 guibg=lightgrey
+
+:hi MatchParen cterm=none ctermbg=black ctermfg=yellow
+:hi Comment guifg=NONE guibg=NONE guisp=NONE cterm=NONE
 
 " ========================================================================
 " Other
