@@ -258,7 +258,7 @@ command! OpenChangedFiles :call OpenChangedFiles()
 "" Test in buffer below
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! TestInBuffer(scope)
-  exec ":w ! bundle exec rspec " . a:scope
+  exec ':w ! (bundle exec rspec ' . a:scope . ' && git commit -am "WIP") || git add . && git reset --hard '
 endfunction
 
 command! TestLineInBuffer :call TestInBuffer(join([expand('%'),  line(".")], ':'))
